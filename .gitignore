@@ -61,3 +61,21 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+
+Driving/Logs/
+
+Driving/ProjectSettings/
+
+Driving/UserSettings/
+
+Driving/Library/APIUpdater/
+
+Driving/Library/PackageCache/
+
+Driving/Library/BurstCache/
+
+Driving/Library/ShaderCache/
+
+Driving/Library/Artifacts/
+
+Driving/Library/Bee/
