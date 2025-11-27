@@ -1,25 +1,25 @@
 m_ProjectFiles:
   m_ManifestFileStatus:
-    m_FilePath: F:/UWE Everything Folder/Year 3/CDG/Testing/Driving/Packages/manifest.json
+    m_FilePath: C:/Users/alexs/Games_Tech/3rd year/CGD/Driving-Testing/Driving/Packages/manifest.json
     m_PathExists: 1
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 638997920984911202
-    m_Hash: 1027897755
+      ticks: 638998671649838201
+    m_Hash: 4203586952
   m_LockFileStatus:
-    m_FilePath: F:/UWE Everything Folder/Year 3/CDG/Testing/Driving/Packages/packages-lock.json
+    m_FilePath: C:/Users/alexs/Games_Tech/3rd year/CGD/Driving-Testing/Driving/Packages/packages-lock.json
     m_PathExists: 1
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 638997920984938769
-    m_Hash: 869832682
+      ticks: 638998671649838201
+    m_Hash: 271191426
 m_EmbeddedPackageManifests:
   m_ManifestsStatus: {}
 m_LocalPackages:
   m_LocalFileStatus: []
-m_ProjectPath: F:/UWE Everything Folder/Year 3/CDG/Testing/Driving/Packages
+m_ProjectPath: C:/Users/alexs/Games_Tech/3rd year/CGD/Driving-Testing/Driving/Packages
 m_EditorVersion: 6000.1.9f1 (ed7b183fd33d)
 m_ResolvedPackages:
 - packageId: com.unity.ai.navigation@2.0.8
@@ -27,7 +27,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 2.0.8
   source: 1
-  resolvedPath: F:\UWE Everything Folder\Year 3\CDG\Testing\Driving\Library\PackageCache\com.unity.ai.navigation@eb5635ad590d
+  resolvedPath: C:\Users\alexs\Games_Tech\3rd year\CGD\Driving-Testing\Driving\Library\PackageCache\com.unity.ai.navigation@eb5635ad590d
   assetPath: Packages/com.unity.ai.navigation
   name: com.unity.ai.navigation
   displayName: AI Navigation
@@ -142,7 +142,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 2.10.2
   source: 1
-  resolvedPath: F:\UWE Everything Folder\Year 3\CDG\Testing\Driving\Library\PackageCache\com.unity.collab-proxy@3351acaba9c9
+  resolvedPath: C:\Users\alexs\Games_Tech\3rd year\CGD\Driving-Testing\Driving\Library\PackageCache\com.unity.collab-proxy@3351acaba9c9
   assetPath: Packages/com.unity.collab-proxy
   name: com.unity.collab-proxy
   displayName: Unity Version Control
@@ -319,7 +319,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 3.0.36
   source: 1
-  resolvedPath: F:\UWE Everything Folder\Year 3\CDG\Testing\Driving\Library\PackageCache\com.unity.ide.rider@4d374c7eb6db
+  resolvedPath: C:\Users\alexs\Games_Tech\3rd year\CGD\Driving-Testing\Driving\Library\PackageCache\com.unity.ide.rider@4d374c7eb6db
   assetPath: Packages/com.unity.ide.rider
   name: com.unity.ide.rider
   displayName: JetBrains Rider Editor
@@ -442,7 +442,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 2.0.23
   source: 1
-  resolvedPath: F:\UWE Everything Folder\Year 3\CDG\Testing\Driving\Library\PackageCache\com.unity.ide.visualstudio@198cdf337d13
+  resolvedPath: C:\Users\alexs\Games_Tech\3rd year\CGD\Driving-Testing\Driving\Library\PackageCache\com.unity.ide.visualstudio@198cdf337d13
   assetPath: Packages/com.unity.ide.visualstudio
   name: com.unity.ide.visualstudio
   displayName: Visual Studio Editor
@@ -550,7 +550,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: F:\UWE Everything Folder\Year 3\CDG\Testing\Driving\Library\PackageCache\com.unity.multiplayer.center@f3fb577b3546
+  resolvedPath: C:\Users\alexs\Games_Tech\3rd year\CGD\Driving-Testing\Driving\Library\PackageCache\com.unity.multiplayer.center@f3fb577b3546
   assetPath: Packages/com.unity.multiplayer.center
   name: com.unity.multiplayer.center
   displayName: Multiplayer Center
@@ -640,7 +640,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 17.1.0
   source: 2
-  resolvedPath: F:\UWE Everything Folder\Year 3\CDG\Testing\Driving\Library\PackageCache\com.unity.render-pipelines.universal@2b88762731f8
+  resolvedPath: C:\Users\alexs\Games_Tech\3rd year\CGD\Driving-Testing\Driving\Library\PackageCache\com.unity.render-pipelines.universal@2b88762731f8
   assetPath: Packages/com.unity.render-pipelines.universal
   name: com.unity.render-pipelines.universal
   displayName: Universal Render Pipeline
@@ -802,7 +802,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.5.1
   source: 2
-  resolvedPath: F:\UWE Everything Folder\Year 3\CDG\Testing\Driving\Library\PackageCache\com.unity.test-framework@7056e7f856e9
+  resolvedPath: C:\Users\alexs\Games_Tech\3rd year\CGD\Driving-Testing\Driving\Library\PackageCache\com.unity.test-framework@7056e7f856e9
   assetPath: Packages/com.unity.test-framework
   name: com.unity.test-framework
   displayName: Test Framework
@@ -940,7 +940,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.8.7
   source: 1
-  resolvedPath: F:\UWE Everything Folder\Year 3\CDG\Testing\Driving\Library\PackageCache\com.unity.timeline@c58b4ee65782
+  resolvedPath: C:\Users\alexs\Games_Tech\3rd year\CGD\Driving-Testing\Driving\Library\PackageCache\com.unity.timeline@c58b4ee65782
   assetPath: Packages/com.unity.timeline
   name: com.unity.timeline
   displayName: Timeline
@@ -1128,7 +1128,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 2.0.0
   source: 2
-  resolvedPath: F:\UWE Everything Folder\Year 3\CDG\Testing\Driving\Library\PackageCache\com.unity.ugui@57cef44123c7
+  resolvedPath: C:\Users\alexs\Games_Tech\3rd year\CGD\Driving-Testing\Driving\Library\PackageCache\com.unity.ugui@57cef44123c7
   assetPath: Packages/com.unity.ugui
   name: com.unity.ugui
   displayName: Unity UI
@@ -1223,7 +1223,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.9.7
   source: 1
-  resolvedPath: F:\UWE Everything Folder\Year 3\CDG\Testing\Driving\Library\PackageCache\com.unity.visualscripting@6279e2b7c485
+  resolvedPath: C:\Users\alexs\Games_Tech\3rd year\CGD\Driving-Testing\Driving\Library\PackageCache\com.unity.visualscripting@6279e2b7c485
   assetPath: Packages/com.unity.visualscripting
   name: com.unity.visualscripting
   displayName: Visual Scripting
@@ -3769,7 +3769,7 @@ m_ResolvedPackages:
   isDirectDependency: 0
   version: 2.0.5
   source: 2
-  resolvedPath: F:\UWE Everything Folder\Year 3\CDG\Testing\Driving\Library\PackageCache\com.unity.ext.nunit@031a54704bff
+  resolvedPath: C:\Users\alexs\Games_Tech\3rd year\CGD\Driving-Testing\Driving\Library\PackageCache\com.unity.ext.nunit@031a54704bff
   assetPath: Packages/com.unity.ext.nunit
   name: com.unity.ext.nunit
   displayName: Custom NUnit
@@ -3848,7 +3848,7 @@ m_ResolvedPackages:
   isDirectDependency: 0
   version: 17.1.0
   source: 2
-  resolvedPath: F:\UWE Everything Folder\Year 3\CDG\Testing\Driving\Library\PackageCache\com.unity.render-pipelines.core@90203779d2fe
+  resolvedPath: C:\Users\alexs\Games_Tech\3rd year\CGD\Driving-Testing\Driving\Library\PackageCache\com.unity.render-pipelines.core@90203779d2fe
   assetPath: Packages/com.unity.render-pipelines.core
   name: com.unity.render-pipelines.core
   displayName: Scriptable Render Pipeline Core
@@ -4062,7 +4062,7 @@ m_ResolvedPackages:
   isDirectDependency: 0
   version: 17.1.0
   source: 2
-  resolvedPath: F:\UWE Everything Folder\Year 3\CDG\Testing\Driving\Library\PackageCache\com.unity.shadergraph@e5d3455aa133
+  resolvedPath: C:\Users\alexs\Games_Tech\3rd year\CGD\Driving-Testing\Driving\Library\PackageCache\com.unity.shadergraph@e5d3455aa133
   assetPath: Packages/com.unity.shadergraph
   name: com.unity.shadergraph
   displayName: Shader Graph
@@ -4265,7 +4265,7 @@ m_ResolvedPackages:
   isDirectDependency: 0
   version: 17.0.3
   source: 2
-  resolvedPath: F:\UWE Everything Folder\Year 3\CDG\Testing\Driving\Library\PackageCache\com.unity.render-pipelines.universal-config@8dc1aab4af1d
+  resolvedPath: C:\Users\alexs\Games_Tech\3rd year\CGD\Driving-Testing\Driving\Library\PackageCache\com.unity.render-pipelines.universal-config@8dc1aab4af1d
   assetPath: Packages/com.unity.render-pipelines.universal-config
   name: com.unity.render-pipelines.universal-config
   displayName: Universal Render Pipeline Config
@@ -4363,7 +4363,7 @@ m_ResolvedPackages:
   isDirectDependency: 0
   version: 4.9.3
   source: 1
-  resolvedPath: F:\UWE Everything Folder\Year 3\CDG\Testing\Driving\Library\PackageCache\com.unity.searcher@1e17ce91558d
+  resolvedPath: C:\Users\alexs\Games_Tech\3rd year\CGD\Driving-Testing\Driving\Library\PackageCache\com.unity.searcher@1e17ce91558d
   assetPath: Packages/com.unity.searcher
   name: com.unity.searcher
   displayName: Searcher
@@ -4452,7 +4452,7 @@ m_ResolvedPackages:
   isDirectDependency: 0
   version: 1.8.23
   source: 1
-  resolvedPath: F:\UWE Everything Folder\Year 3\CDG\Testing\Driving\Library\PackageCache\com.unity.burst@6aff1dd08a0c
+  resolvedPath: C:\Users\alexs\Games_Tech\3rd year\CGD\Driving-Testing\Driving\Library\PackageCache\com.unity.burst@6aff1dd08a0c
   assetPath: Packages/com.unity.burst
   name: com.unity.burst
   displayName: Burst
@@ -4677,7 +4677,7 @@ m_ResolvedPackages:
   isDirectDependency: 0
   version: 1.3.2
   source: 1
-  resolvedPath: F:\UWE Everything Folder\Year 3\CDG\Testing\Driving\Library\PackageCache\com.unity.mathematics@8017b507cc74
+  resolvedPath: C:\Users\alexs\Games_Tech\3rd year\CGD\Driving-Testing\Driving\Library\PackageCache\com.unity.mathematics@8017b507cc74
   assetPath: Packages/com.unity.mathematics
   name: com.unity.mathematics
   displayName: Mathematics
@@ -4768,7 +4768,7 @@ m_ResolvedPackages:
   isDirectDependency: 0
   version: 2.5.1
   source: 1
-  resolvedPath: F:\UWE Everything Folder\Year 3\CDG\Testing\Driving\Library\PackageCache\com.unity.collections@56bff8827a7e
+  resolvedPath: C:\Users\alexs\Games_Tech\3rd year\CGD\Driving-Testing\Driving\Library\PackageCache\com.unity.collections@56bff8827a7e
   assetPath: Packages/com.unity.collections
   name: com.unity.collections
   displayName: Collections
@@ -4951,7 +4951,7 @@ m_ResolvedPackages:
   isDirectDependency: 0
   version: 1.0.1
   source: 2
-  resolvedPath: F:\UWE Everything Folder\Year 3\CDG\Testing\Driving\Library\PackageCache\com.unity.rendering.light-transport@e647573c7d2a
+  resolvedPath: C:\Users\alexs\Games_Tech\3rd year\CGD\Driving-Testing\Driving\Library\PackageCache\com.unity.rendering.light-transport@e647573c7d2a
   assetPath: Packages/com.unity.rendering.light-transport
   name: com.unity.rendering.light-transport
   displayName: Unity Light Transport Library
@@ -5047,7 +5047,7 @@ m_ResolvedPackages:
   isDirectDependency: 0
   version: 1.11.4
   source: 1
-  resolvedPath: F:\UWE Everything Folder\Year 3\CDG\Testing\Driving\Library\PackageCache\com.unity.nuget.mono-cecil@d6f9955a5d5f
+  resolvedPath: C:\Users\alexs\Games_Tech\3rd year\CGD\Driving-Testing\Driving\Library\PackageCache\com.unity.nuget.mono-cecil@d6f9955a5d5f
   assetPath: Packages/com.unity.nuget.mono-cecil
   name: com.unity.nuget.mono-cecil
   displayName: Mono Cecil
@@ -5131,7 +5131,7 @@ m_ResolvedPackages:
   isDirectDependency: 0
   version: 3.1.0
   source: 1
-  resolvedPath: F:\UWE Everything Folder\Year 3\CDG\Testing\Driving\Library\PackageCache\com.unity.test-framework.performance@92d1d09a72ed
+  resolvedPath: C:\Users\alexs\Games_Tech\3rd year\CGD\Driving-Testing\Driving\Library\PackageCache\com.unity.test-framework.performance@92d1d09a72ed
   assetPath: Packages/com.unity.test-framework.performance
   name: com.unity.test-framework.performance
   displayName: Performance testing API
