@@ -77,6 +77,7 @@ public class ForkliftController : MonoBehaviour
         forkRB.AddForceAtPosition(deceleration * moveInput * -transform.forward, accelerationPoint.position, ForceMode.Acceleration);
     }
     #endregion
+
     #region Forklift Status Checks
 
     private void GroundCheck()
