@@ -9,9 +9,7 @@ public class DrivingController : MonoBehaviour
     [Header("MainComponents")]
     [SerializeField] CharacterController characterController;
 
-    [Header("Variables")]
-    [SerializeField] float gravity = -9.81f;
-    [SerializeField] bool is_grounded;
+    [Header("Variables")]   
     [SerializeField] float acceleration = 20f;
     [SerializeField] float break_multiplier = 3.0f;
     [SerializeField] float speed = 0f;
@@ -19,6 +17,15 @@ public class DrivingController : MonoBehaviour
     [SerializeField] float rotate_speed = 5.0f;
     [SerializeField] Vector2 Movement;
     [SerializeField] bool is_moving => (Movement.y != 0);
+
+    [Header("Gravity Variables")]
+    [SerializeField] Transform groundCheck;
+    [SerializeField] bool is_grounded;
+    [SerializeField] LayerMask groundMask;
+    [SerializeField] float groundDistance = 0.4f;
+    [SerializeField] float wheelRadius = 0.5f;
+    [SerializeField] float gravity = -9.81f;
+    [SerializeField] float vehicleMass = 500f;
 
     [Header("Drifting Variables")]
     [SerializeField] GameObject body;
@@ -40,6 +47,8 @@ public class DrivingController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        ApplyGravity();
+        GroundCheck(is_grounded);  
         updateMove();
         updateRotate();
     }
@@ -155,5 +164,30 @@ public class DrivingController : MonoBehaviour
         Gizmos.color = Color.lightBlue;
 
         Gizmos.DrawSphere(transform.position + transform.forward * body.transform.localScale.z / 2f, 1);
+    }
+
+    public void ApplyGravity()
+    {
+        if (is_grounded == false)
+        {
+            UnityEngine.Debug.Log("Applying Gravity");
+            characterController.Move(Vector3.up * gravity * vehicleMass * Time.deltaTime);
+        }
+    }
+    public void GroundCheck(bool grounded)
+    {
+        RaycastHit hit; 
+        float rayLength = groundDistance + wheelRadius;
+        if(Physics.Raycast(groundCheck.position, -groundCheck.up, out hit, rayLength, groundMask))
+        {
+            UnityEngine.Debug.DrawRay(groundCheck.position, -groundCheck.up * rayLength, Color.green);
+            grounded = true;
+        }
+        else
+        {
+            UnityEngine.Debug.DrawRay(groundCheck.position, -groundCheck.up * rayLength, Color.red);
+            grounded = false;
+        }
+        is_grounded = grounded;
     }
 }
