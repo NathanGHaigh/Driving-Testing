@@ -1,6 +1,6 @@
-using Unity.VisualScripting;
+using System.ComponentModel;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEngine.Animations;
 using UnityEngine.InputSystem;
 
 public class DrivingController : MonoBehaviour
@@ -20,7 +20,16 @@ public class DrivingController : MonoBehaviour
     [SerializeField] Vector2 Movement;
     [SerializeField] bool is_moving => (Movement.y != 0);
 
+    [Header("Drifting Variables")]
+    [SerializeField] GameObject body;
+    [SerializeField] float maxRotation = 30;
+    [SerializeField] Animation driftAnimation;
+
     float sign = 1f;
+
+    [Header("Manual drift variables")]
+    [SerializeField] bool manualDriftAnim = true;
+    [SerializeField] float manualAnimationSpeed = 1f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -30,6 +39,12 @@ public class DrivingController : MonoBehaviour
 
     // Update is called once per frame
     void Update()
+    {
+        updateMove();
+        updateRotate();
+    }
+
+    private void updateMove()
     {
         //if triggers held
         if (is_moving)
@@ -51,6 +66,11 @@ public class DrivingController : MonoBehaviour
             if (Mathf.Abs(speed) <= acceleration * Time.deltaTime * break_multiplier)
             {
                 speed = 0;
+
+                Movement.x = 0;
+
+                body.transform.rotation = transform.rotation;
+                body.transform.position = transform.position;
             }
             //otherwise decelerate
             else
@@ -59,12 +79,51 @@ public class DrivingController : MonoBehaviour
             }
         }
 
-        if(speed != 0)
+        characterController.Move(transform.forward * speed * Time.deltaTime);
+    }
+
+    private void updateRotate()
+    {
+
+        //if the player isn't moving or trying to turn then return
+        if(speed == 0 || Movement.x == 0)
         {
-            transform.Rotate(0, Movement.x * rotate_speed, 0);
+            body.transform.rotation = transform.rotation;
+            body.transform.position = transform.position;
+
+            return;
         }
 
-        characterController.Move(transform.forward * speed * Time.deltaTime);
+        transform.Rotate(0, Movement.x * rotate_speed * Time.deltaTime, 0);
+
+        float bodyAngle = Mathf.Ceil(body.transform.localEulerAngles.y - 360f * Mathf.Floor(body.transform.localEulerAngles.y / 180f));
+
+        //If the body is fully rotated, then return
+        if (Mathf.Abs(bodyAngle) >= maxRotation) 
+        {
+            return;
+        }
+
+        //If there is no animation added for the drift, then do a basic, manual animation
+        if(manualDriftAnim)
+        {
+            body.transform.RotateAround(
+                body.transform.position + body.transform.forward * body.transform.localScale.z / 2f,
+                Vector3.up,
+                Movement.x* manualAnimationSpeed);
+        }
+        else
+        {
+            if(driftAnimation != null)
+            {
+                driftAnimation.Play();
+            }
+
+            body.transform.RotateAround(
+                body.transform.position + body.transform.forward * body.transform.localScale.z / 2f,
+                Vector3.up,
+                Movement.x * maxRotation);
+        }
     }
 
     public void OnMove(InputValue value)
@@ -89,5 +148,12 @@ public class DrivingController : MonoBehaviour
         {
             Movement.x = inputvalue.x;
         }      
+    }
+
+    public void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.lightBlue;
+
+        Gizmos.DrawSphere(transform.position + transform.forward * body.transform.localScale.z / 2f, 1);
     }
 }

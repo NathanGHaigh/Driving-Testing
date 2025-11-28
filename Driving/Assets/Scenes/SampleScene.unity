@@ -393,10 +393,16 @@ MonoBehaviour:
   gravity: -9.81
   is_grounded: 0
   acceleration: 20
+  break_multiplier: 3
   speed: 1
   max_speed: 35
-  rotate_speed: 5
+  rotate_speed: 50
   Movement: {x: 0, y: 0}
+  body: {fileID: 1636678880}
+  maxRotation: 45
+  driftAnimation: {fileID: 0}
+  manualDriftAnim: 1
+  manualAnimationSpeed: 3
 --- !u!4 &692379242
 Transform:
   m_ObjectHideFlags: 0
@@ -520,13 +526,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 886158079}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.18277109, y: -0, z: -0, w: 0.98315555}
-  m_LocalPosition: {x: 0, y: 2.2860003, z: -2.9799805}
+  m_LocalRotation: {x: 0.24217585, y: 0, z: 0, w: 0.9702324}
+  m_LocalPosition: {x: 0, y: 5.62, z: -7.73}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 692379242}
-  m_LocalEulerAnglesHint: {x: 21.062, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 28.03, y: 0, z: 0}
 --- !u!114 &886158081
 MonoBehaviour:
   m_ObjectHideFlags: 0
