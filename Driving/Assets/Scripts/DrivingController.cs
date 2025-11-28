@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Security.Cryptography;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -9,7 +10,7 @@ public class DrivingController : MonoBehaviour
     [Header("MainComponents")]
     [SerializeField] CharacterController characterController;
 
-    [Header("Variables")]   
+    [Header("Variables")]
     [SerializeField] float acceleration = 20f;
     [SerializeField] float break_multiplier = 3.0f;
     [SerializeField] float speed = 0f;
@@ -26,6 +27,9 @@ public class DrivingController : MonoBehaviour
     [SerializeField] float wheelRadius = 0.5f;
     [SerializeField] float gravity = -9.81f;
     [SerializeField] float vehicleMass = 500f;
+
+    [Header("Suspension Variables")]
+    [SerializeField] float suspensionStrength = 5000f;
 
     [Header("Drifting Variables")]
     [SerializeField] GameObject body;
@@ -48,7 +52,8 @@ public class DrivingController : MonoBehaviour
     void Update()
     {
         ApplyGravity();
-        GroundCheck(is_grounded);  
+        GroundCheck(is_grounded);
+        RotateToFloor();
         updateMove();
         updateRotate();
     }
@@ -95,7 +100,7 @@ public class DrivingController : MonoBehaviour
     {
 
         //if the player isn't moving or trying to turn then return
-        if(speed == 0 || Movement.x == 0)
+        if (speed == 0 || Movement.x == 0)
         {
             body.transform.rotation = transform.rotation;
             body.transform.position = transform.position;
@@ -108,22 +113,22 @@ public class DrivingController : MonoBehaviour
         float bodyAngle = Mathf.Ceil(body.transform.localEulerAngles.y - 360f * Mathf.Floor(body.transform.localEulerAngles.y / 180f));
 
         //If the body is fully rotated, then return
-        if (Mathf.Abs(bodyAngle) >= maxRotation) 
+        if (Mathf.Abs(bodyAngle) >= maxRotation)
         {
             return;
         }
 
         //If there is no animation added for the drift, then do a basic, manual animation
-        if(manualDriftAnim)
+        if (manualDriftAnim)
         {
             body.transform.RotateAround(
                 body.transform.position + body.transform.forward * body.transform.localScale.z / 2f,
                 Vector3.up,
-                Movement.x* manualAnimationSpeed);
+                Movement.x * manualAnimationSpeed);
         }
         else
         {
-            if(driftAnimation != null)
+            if (driftAnimation != null)
             {
                 driftAnimation.Play();
             }
@@ -142,7 +147,7 @@ public class DrivingController : MonoBehaviour
         {
             Movement.y = inputvalue.y;
 
-            if(Movement.y != 0)
+            if (Movement.y != 0)
             {
                 sign = Mathf.Sign(Movement.y);
             }
@@ -152,11 +157,11 @@ public class DrivingController : MonoBehaviour
 
     public void OnTurn(InputValue value)
     {
-        var inputvalue = value.Get<Vector2>();        
+        var inputvalue = value.Get<Vector2>();
         if (is_moving)
         {
             Movement.x = inputvalue.x;
-        }      
+        }
     }
 
     public void OnDrawGizmosSelected()
@@ -176,9 +181,9 @@ public class DrivingController : MonoBehaviour
     }
     public void GroundCheck(bool grounded)
     {
-        RaycastHit hit; 
+        RaycastHit hit;
         float rayLength = groundDistance + wheelRadius;
-        if(Physics.Raycast(groundCheck.position, -groundCheck.up, out hit, rayLength, groundMask))
+        if (Physics.Raycast(groundCheck.position, -groundCheck.up, out hit, rayLength, groundMask))
         {
             UnityEngine.Debug.DrawRay(groundCheck.position, -groundCheck.up * rayLength, Color.green);
             grounded = true;
@@ -189,5 +194,16 @@ public class DrivingController : MonoBehaviour
             grounded = false;
         }
         is_grounded = grounded;
+    }
+
+    public void RotateToFloor()
+    {
+        RaycastHit hit;
+        float rayLength = groundDistance + wheelRadius;
+        if (Physics.Raycast(groundCheck.position, -groundCheck.up, out hit, rayLength, groundMask))
+        {
+            Quaternion targetRotation = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 10f * Time.deltaTime);
+        }
     }
 }
