@@ -48,7 +48,8 @@ public class DrivingController : MonoBehaviour
     void Update()
     {
         ApplyGravity();
-        GroundCheck(is_grounded);  
+        GroundCheck();  
+
         updateMove();
         updateRotate();
     }
@@ -97,8 +98,8 @@ public class DrivingController : MonoBehaviour
         //if the player isn't moving or trying to turn then return
         if(speed == 0 || Movement.x == 0)
         {
-            body.transform.rotation = transform.rotation;
-            body.transform.position = transform.position;
+            body.transform.localRotation = new(0,0,0,0);
+            body.transform.localPosition = new(0,0,0);
 
             return;
         }
@@ -163,31 +164,29 @@ public class DrivingController : MonoBehaviour
     {
         Gizmos.color = Color.lightBlue;
 
-        Gizmos.DrawSphere(transform.position + transform.forward * body.transform.localScale.z / 2f, 1);
+        Gizmos.DrawSphere(transform.position + transform.forward * body.transform.localScale.z / 2f, 0.5f);
     }
 
     public void ApplyGravity()
     {
         if (is_grounded == false)
         {
-            UnityEngine.Debug.Log("Applying Gravity");
             characterController.Move(Vector3.up * gravity * vehicleMass * Time.deltaTime);
         }
     }
-    public void GroundCheck(bool grounded)
+    public void GroundCheck()
     {
         RaycastHit hit; 
         float rayLength = groundDistance + wheelRadius;
         if(Physics.Raycast(groundCheck.position, -groundCheck.up, out hit, rayLength, groundMask))
         {
-            UnityEngine.Debug.DrawRay(groundCheck.position, -groundCheck.up * rayLength, Color.green);
-            grounded = true;
+            Debug.DrawRay(groundCheck.position, -groundCheck.up * rayLength, Color.green);
+            is_grounded = true;
         }
         else
         {
-            UnityEngine.Debug.DrawRay(groundCheck.position, -groundCheck.up * rayLength, Color.red);
-            grounded = false;
+            Debug.DrawRay(groundCheck.position, -groundCheck.up * rayLength, Color.red);
+            is_grounded = false;
         }
-        is_grounded = grounded;
     }
 }
