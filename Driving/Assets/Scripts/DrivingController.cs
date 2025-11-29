@@ -26,6 +26,9 @@ public class DrivingController : MonoBehaviour
     [SerializeField] float wheelRadius = 0.5f;
     [SerializeField] float gravity = -9.81f;
     [SerializeField] float vehicleMass = 500f;
+    [SerializeField] float terminalVelocity = 10f;
+
+    float downwardVelocity = 0f;
 
     [Header("Drifting Variables")]
     [SerializeField] GameObject body;
@@ -47,8 +50,8 @@ public class DrivingController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        ApplyGravity();
         GroundCheck();  
+        ApplyGravity();
 
         updateMove();
         updateRotate();
@@ -78,9 +81,6 @@ public class DrivingController : MonoBehaviour
                 speed = 0;
 
                 Movement.x = 0;
-
-                body.transform.rotation = transform.rotation;
-                body.transform.position = transform.position;
             }
             //otherwise decelerate
             else
@@ -171,7 +171,14 @@ public class DrivingController : MonoBehaviour
     {
         if (is_grounded == false)
         {
-            characterController.Move(Vector3.up * gravity * vehicleMass * Time.deltaTime);
+            downwardVelocity += downwardVelocity < terminalVelocity ? gravity * Time.deltaTime : 0f;
+            characterController.Move(Vector3.up * downwardVelocity * vehicleMass * Time.deltaTime);
+        }
+        else
+        {
+            transform.Translate(0, wheelRadius + groundDistance,0);
+
+            downwardVelocity = 0f;
         }
     }
     public void GroundCheck()
