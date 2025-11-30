@@ -3,6 +3,7 @@ using System.Security.Cryptography;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 public class DrivingController : MonoBehaviour
 {
@@ -12,7 +13,7 @@ public class DrivingController : MonoBehaviour
 
     [Header("Variables")]
     [SerializeField] float acceleration = 20f;
-    [SerializeField] float break_multiplier = 3.0f;
+    [SerializeField] float brake_multiplier = 3.0f;
     [SerializeField] float speed = 0f;
     [SerializeField] float max_speed = 35f;
     [SerializeField] float rotate_speed = 5.0f;
@@ -45,6 +46,8 @@ public class DrivingController : MonoBehaviour
     [SerializeField] bool manualDriftAnim = true;
     [SerializeField] float manualAnimationSpeed = 1f;
 
+    private Vector3 hitPosition;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -55,14 +58,33 @@ public class DrivingController : MonoBehaviour
     void Update()
     {
         GroundCheck();  
-        ApplyGravity();
-        GroundCheck(is_grounded);
+
         RotateToFloor();
+
+        ApplyGravity();
 
         updateMove();
         updateRotate();
     }
 
+    private void brake(float multiplier = 1f)
+    {
+        float speed_recuction = acceleration * Time.deltaTime * multiplier;
+
+        //if speed is around 0 then stop
+        if (Mathf.Abs(speed) <= speed_recuction)
+        {
+            speed = 0;
+
+            Movement.x = 0;
+        }
+        //otherwise decelerate
+        else
+        {
+            speed -= speed_recuction;
+        }
+    }
+    
     private void updateMove()
     {
         //if triggers held
@@ -75,24 +97,13 @@ public class DrivingController : MonoBehaviour
             }
             else
             {
-                speed += acceleration * Time.deltaTime * sign * ((Mathf.Sign(speed) != sign) ? break_multiplier : 1);
+                speed += acceleration * Time.deltaTime * sign * ((Mathf.Sign(speed) != sign) ? brake_multiplier : 1);
             }
         }
         //if triggers not held
         else
         {
-            //if speed is around 0 then stop
-            if (Mathf.Abs(speed) <= acceleration * Time.deltaTime * break_multiplier)
-            {
-                speed = 0;
-
-                Movement.x = 0;
-            }
-            //otherwise decelerate
-            else
-            {
-                speed -= acceleration * Time.deltaTime * sign * break_multiplier;
-            }
+            brake(brake_multiplier);
         }
 
         characterController.Move(transform.forward * speed * Time.deltaTime);
@@ -137,7 +148,7 @@ public class DrivingController : MonoBehaviour
 
             body.transform.RotateAround(
                 body.transform.position + body.transform.forward * body.transform.localScale.z / 2f,
-                Vector3.up,
+                transform.up,
                 Movement.x * maxRotation);
         }
     }
@@ -179,16 +190,17 @@ public class DrivingController : MonoBehaviour
         {
             downwardVelocity += downwardVelocity < terminalVelocity ? gravity * Time.deltaTime : 0f;
             characterController.Move(Vector3.up * downwardVelocity * vehicleMass * Time.deltaTime);
+
+            brake();
         }
         else
         {
-            transform.Translate(0, wheelRadius + groundDistance,0);
+            characterController.Move(new Vector3(0, (groundDistance + wheelRadius)-Vector3.Distance(groundCheck.position, hitPosition), 0));
 
             downwardVelocity = 0f;
         }
     }
 
-    public void GroundCheck(bool grounded)
     public void GroundCheck()
     {
         RaycastHit hit;
@@ -208,11 +220,16 @@ public class DrivingController : MonoBehaviour
     public void RotateToFloor()
     {
         RaycastHit hit;
+
+        hitPosition = new();
+
         float rayLength = groundDistance + wheelRadius;
         if (Physics.Raycast(groundCheck.position, -groundCheck.up, out hit, rayLength, groundMask))
         {
             Quaternion targetRotation = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 10f * Time.deltaTime);
+
+            hitPosition = hit.point;
         }
     }
 }
