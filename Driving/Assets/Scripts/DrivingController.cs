@@ -27,9 +27,12 @@ public class DrivingController : MonoBehaviour
     [SerializeField] float wheelRadius = 0.5f;
     [SerializeField] float gravity = -9.81f;
     [SerializeField] float vehicleMass = 500f;
+    [SerializeField] float terminalVelocity = 10f;
 
     [Header("Suspension Variables")]
     [SerializeField] float suspensionStrength = 5000f;
+
+    float downwardVelocity = 0f;
 
     [Header("Drifting Variables")]
     [SerializeField] GameObject body;
@@ -51,9 +54,11 @@ public class DrivingController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        GroundCheck();  
         ApplyGravity();
         GroundCheck(is_grounded);
         RotateToFloor();
+
         updateMove();
         updateRotate();
     }
@@ -82,9 +87,6 @@ public class DrivingController : MonoBehaviour
                 speed = 0;
 
                 Movement.x = 0;
-
-                body.transform.rotation = transform.rotation;
-                body.transform.position = transform.position;
             }
             //otherwise decelerate
             else
@@ -102,8 +104,8 @@ public class DrivingController : MonoBehaviour
         //if the player isn't moving or trying to turn then return
         if (speed == 0 || Movement.x == 0)
         {
-            body.transform.rotation = transform.rotation;
-            body.transform.position = transform.position;
+            body.transform.localRotation = new(0,0,0,0);
+            body.transform.localPosition = new(0,0,0);
 
             return;
         }
@@ -168,33 +170,39 @@ public class DrivingController : MonoBehaviour
     {
         Gizmos.color = Color.lightBlue;
 
-        Gizmos.DrawSphere(transform.position + transform.forward * body.transform.localScale.z / 2f, 1);
+        Gizmos.DrawSphere(transform.position + transform.forward * body.transform.localScale.z / 2f, 0.5f);
     }
 
     public void ApplyGravity()
     {
         if (is_grounded == false)
         {
-            UnityEngine.Debug.Log("Applying Gravity");
-            characterController.Move(Vector3.up * gravity * vehicleMass * Time.deltaTime);
+            downwardVelocity += downwardVelocity < terminalVelocity ? gravity * Time.deltaTime : 0f;
+            characterController.Move(Vector3.up * downwardVelocity * vehicleMass * Time.deltaTime);
+        }
+        else
+        {
+            transform.Translate(0, wheelRadius + groundDistance,0);
+
+            downwardVelocity = 0f;
         }
     }
 
     public void GroundCheck(bool grounded)
+    public void GroundCheck()
     {
         RaycastHit hit;
         float rayLength = groundDistance + wheelRadius;
         if (Physics.Raycast(groundCheck.position, -groundCheck.up, out hit, rayLength, groundMask))
         {
-            UnityEngine.Debug.DrawRay(groundCheck.position, -groundCheck.up * rayLength, Color.green);
-            grounded = true;
+            Debug.DrawRay(groundCheck.position, -groundCheck.up * rayLength, Color.green);
+            is_grounded = true;
         }
         else
         {
-            UnityEngine.Debug.DrawRay(groundCheck.position, -groundCheck.up * rayLength, Color.red);
-            grounded = false;
+            Debug.DrawRay(groundCheck.position, -groundCheck.up * rayLength, Color.red);
+            is_grounded = false;
         }
-        is_grounded = grounded;
     }
 
     public void RotateToFloor()
