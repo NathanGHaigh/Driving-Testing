@@ -123,7 +123,7 @@ public class DrivingController : MonoBehaviour
         {
             body.transform.RotateAround(
                 body.transform.position + body.transform.forward * body.transform.localScale.z / 2f,
-                Vector3.up,
+                transform.up,
                 Movement.x * manualAnimationSpeed);
         }
         else
@@ -179,6 +179,7 @@ public class DrivingController : MonoBehaviour
             characterController.Move(Vector3.up * gravity * vehicleMass * Time.deltaTime);
         }
     }
+
     public void GroundCheck(bool grounded)
     {
         RaycastHit hit;
