@@ -81,7 +81,7 @@ public class DrivingController : MonoBehaviour
         //otherwise decelerate
         else
         {
-            speed -= speed_recuction;
+            speed -= speed_recuction * sign;
         }
     }
     
@@ -232,4 +232,6 @@ public class DrivingController : MonoBehaviour
             hitPosition = hit.point;
         }
     }
+
+    void OnCollisionEnter(Collision collision) { }
 }
