@@ -20,9 +20,14 @@ public class DrivingController : MonoBehaviour
     [SerializeField] Vector2 Movement;
     [SerializeField] bool is_moving => (Movement.y != 0);
 
+    [SerializeField] bool moving;
+
     [Header("Gravity Variables")]
-    [SerializeField] Transform groundCheck;
+    [SerializeField] Transform groundCheckFront;
+    [SerializeField] Transform groundCheckBack;
     [SerializeField] bool is_grounded;
+    [SerializeField] bool frontGrounded;
+    [SerializeField] bool backGrounded;
     [SerializeField] LayerMask groundMask;
     [SerializeField] float groundDistance = 0.4f;
     [SerializeField] float wheelRadius = 0.5f;
@@ -51,20 +56,28 @@ public class DrivingController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        is_grounded = true;
+        is_grounded = false;
+        frontGrounded = false;
+        backGrounded = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        GroundCheck();  
+        GroundCheck(groundCheckFront, ref frontGrounded);
+        GroundCheck(groundCheckBack, ref backGrounded);
 
-        RotateToFloor();
+        is_grounded = frontGrounded || backGrounded;
+
+        if (!is_grounded) Movement.y = 0;
 
         ApplyGravity();
+        RotateToFloor();
 
         updateMove();
         updateRotate();
+
+        moving = is_moving;
     }
 
     private void brake(float multiplier = 1f)
@@ -87,8 +100,8 @@ public class DrivingController : MonoBehaviour
     
     private void updateMove()
     {
-        //if triggers held
-        if (is_moving)
+        //if triggers held and the vehicle is on the floor, then move
+        if (is_moving && is_grounded)
         {
             //if current speed is maxxed out
             if (Mathf.Abs(speed) >= max_speed)
@@ -100,8 +113,8 @@ public class DrivingController : MonoBehaviour
                 speed += acceleration * Time.deltaTime * sign * ((Mathf.Sign(speed) != sign) ? brake_multiplier : 1);
             }
         }
-        //if triggers not held
-        else
+        //if triggers not held, decelerate
+        else if(is_grounded)
         {
             brake(brake_multiplier);
         }
@@ -195,42 +208,95 @@ public class DrivingController : MonoBehaviour
         }
         else
         {
-            characterController.Move(new Vector3(0, (groundDistance + wheelRadius)-Vector3.Distance(groundCheck.position, hitPosition), 0));
+            characterController.Move(new Vector3(0, (groundDistance + wheelRadius) - Vector3.Distance(groundCheckFront.position, hitPosition), 0));
 
             downwardVelocity = 0f;
         }
     }
 
-    public void GroundCheck()
+    public void GroundCheck(Transform currentPosition, ref bool groundCheck)
     {
         RaycastHit hit;
+
         float rayLength = groundDistance + wheelRadius;
-        if (Physics.Raycast(groundCheck.position, -groundCheck.up, out hit, rayLength, groundMask))
+
+        if(Physics.Raycast(currentPosition.position, -currentPosition.up, out hit, rayLength, groundMask))
         {
-            Debug.DrawRay(groundCheck.position, -groundCheck.up * rayLength, Color.green);
-            is_grounded = true;
+            Debug.DrawRay(currentPosition.position, -currentPosition.up * rayLength, Color.green);
+            groundCheck = true;
+            UnityEngine.Debug.Log("Grounded");
         }
         else
         {
-            Debug.DrawRay(groundCheck.position, -groundCheck.up * rayLength, Color.red);
-            is_grounded = false;
+            Debug.DrawRay(currentPosition.position, -currentPosition.up * rayLength, Color.red);
+            groundCheck = false;
+            UnityEngine.Debug.Log("Not Grounded");
         }
     }
 
     public void RotateToFloor()
     {
         RaycastHit hit;
-
+        
         hitPosition = new();
 
+        Quaternion targetRotationFront = new();
+        Quaternion targetRotationBack = new();
+
         float rayLength = groundDistance + wheelRadius;
-        if (Physics.Raycast(groundCheck.position, -groundCheck.up, out hit, rayLength, groundMask))
+        
+        if (Physics.Raycast(groundCheckFront.position, -groundCheckFront.up, out hit, rayLength, groundMask))
         {
-            Quaternion targetRotation = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 10f * Time.deltaTime);
+            targetRotationFront = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
 
             hitPosition = hit.point;
         }
+        if(Physics.Raycast(groundCheckBack.position, -groundCheckBack.up, out hit, rayLength, groundMask))
+        {
+            targetRotationBack = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
+
+            hitPosition = hit.point;
+        }
+
+        if(is_grounded == false)
+        {
+            transform.rotation = Quaternion.FromToRotation(transform.up, Vector3.up) * transform.rotation;
+            return;
+        }
+
+        rotateVehicle(targetRotationFront, targetRotationBack);
+    }
+
+    //Rotate the vehicle to the correct rotation of the surface
+    private void rotateVehicle(Quaternion targetRotationFront, Quaternion targetRotationBack)
+    {
+        //if both rays are detecting a surface, then rotate to the surfaces average rotation
+        if (targetRotationFront != new Quaternion() && targetRotationBack != new Quaternion())
+        {
+            Quaternion temp = new(
+                avg(targetRotationFront.x, targetRotationBack.x),
+                avg(targetRotationFront.y, targetRotationBack.y),
+                avg(targetRotationFront.z, targetRotationBack.z),
+                avg(targetRotationFront.w, targetRotationBack.w));
+        
+            transform.rotation = Quaternion.Slerp(transform.rotation, temp, 1);
+        }
+        //if the back doesn't detect a surface, rotate to the rotation of the front
+        else if (targetRotationBack == new Quaternion())
+        {
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotationFront, 1);
+        }
+        //if the front doesn't detect a surface, rotate to the rotation of the back
+        else if (targetRotationFront == new Quaternion())
+        {
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotationBack, 1);
+        }
+    }
+
+    //Averages the two floats
+    float avg(float a, float b)
+    {
+        return (a + b) / 2f;
     }
 
     void OnCollisionEnter(Collision collision) { }
