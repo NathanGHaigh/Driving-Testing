@@ -119,6 +119,68 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &17960366
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 17960367}
+  m_Layer: 0
+  m_Name: GroundCheckRight
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &17960367
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 17960366}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.9, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 692379242}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &50368248
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 50368249}
+  m_Layer: 0
+  m_Name: GroundCheckLeft
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &50368249
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 50368248}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.9, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 692379242}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -148,7 +210,7 @@ Light:
   serializedVersion: 11
   m_Type: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.98
+  m_Intensity: 0.5
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -267,13 +329,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 594741488}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.99170935, z: 0.12850127, w: 0}
+  m_LocalRotation: {x: 0, y: 0.9917832, z: 0.12793021, w: 0}
   m_LocalPosition: {x: 552.99335, y: 4.28001, z: 759.2}
   m_LocalScale: {x: 115.06, y: 1, z: 123.09999}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: -14.766, y: 180, z: 0}
+  m_LocalEulerAnglesHint: {x: -14.7, y: 180, z: 0}
 --- !u!65 &594741490
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -507,6 +569,8 @@ MonoBehaviour:
   moving: 0
   groundCheckFront: {fileID: 1394478090}
   groundCheckBack: {fileID: 1783484202}
+  groundCheckLeft: {fileID: 50368249}
+  groundCheckRight: {fileID: 17960367}
   is_grounded: 0
   frontGrounded: 0
   backGrounded: 0
@@ -524,6 +588,7 @@ MonoBehaviour:
   driftAnimation: {fileID: 0}
   manualDriftAnim: 1
   manualAnimationSpeed: 3
+  maxRotationTime: 1
 --- !u!4 &692379242
 Transform:
   m_ObjectHideFlags: 0
@@ -541,6 +606,8 @@ Transform:
   - {fileID: 886158080}
   - {fileID: 1394478090}
   - {fileID: 1783484202}
+  - {fileID: 50368249}
+  - {fileID: 17960367}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &692379243
@@ -817,13 +884,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1275412038}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.12849955, y: -0, z: -0, w: 0.9917096}
+  m_LocalRotation: {x: -0.12793021, y: 0, z: 0, w: 0.9917832}
   m_LocalPosition: {x: 552.99335, y: 4.28001, z: 560.356}
   m_LocalScale: {x: 115.06, y: 1, z: 123.100006}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: -14.766, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -14.7, y: 0, z: 0}
 --- !u!65 &1275412040
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1201,7 +1268,7 @@ Transform:
   m_GameObject: {fileID: 1934041776}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 552.99335, y: 20.1, z: 659.8}
+  m_LocalPosition: {x: 552.99335, y: 19.88, z: 659.8}
   m_LocalScale: {x: 115.06, y: 1, z: 80.060555}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -1,9 +1,9 @@
-using System.ComponentModel;
-using System.Security.Cryptography;
-using UnityEditor.Experimental.GraphView;
+using Unity.Burst.Intrinsics;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
+using UnityEngine.Windows;
+
 
 public class DrivingController : MonoBehaviour
 {
@@ -25,6 +25,8 @@ public class DrivingController : MonoBehaviour
     [Header("Gravity Variables")]
     [SerializeField] Transform groundCheckFront;
     [SerializeField] Transform groundCheckBack;
+    [SerializeField] Transform groundCheckLeft;
+    [SerializeField] Transform groundCheckRight;
     [SerializeField] bool is_grounded;
     [SerializeField] bool frontGrounded;
     [SerializeField] bool backGrounded;
@@ -53,6 +55,11 @@ public class DrivingController : MonoBehaviour
 
     private Vector3 hitPosition;
 
+    private Quaternion currentTargetRotation;
+    private float rotationTimeAcc = 0f; //rotation time accumulator
+    [Tooltip("time it takes for a rotation of the vehicle to occur")]
+    [SerializeField] private float maxRotationTime = 1f;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -69,13 +76,12 @@ public class DrivingController : MonoBehaviour
 
         is_grounded = frontGrounded || backGrounded;
 
-        if (!is_grounded) Movement.y = 0;
-
         ApplyGravity();
-        RotateToFloor();
 
         updateMove();
         updateRotate();
+
+        RotateToFloor();
 
         moving = is_moving;
     }
@@ -97,7 +103,7 @@ public class DrivingController : MonoBehaviour
             speed -= speed_recuction * sign;
         }
     }
-    
+
     private void updateMove()
     {
         //if triggers held and the vehicle is on the floor, then move
@@ -114,7 +120,7 @@ public class DrivingController : MonoBehaviour
             }
         }
         //if triggers not held, decelerate
-        else if(is_grounded)
+        else if (is_grounded)
         {
             brake(brake_multiplier);
         }
@@ -128,8 +134,8 @@ public class DrivingController : MonoBehaviour
         //if the player isn't moving or trying to turn then return
         if (speed == 0 || Movement.x == 0)
         {
-            body.transform.localRotation = new(0,0,0,0);
-            body.transform.localPosition = new(0,0,0);
+            body.transform.localRotation = new(0, 0, 0, 0);
+            body.transform.localPosition = new(0, 0, 0);
 
             return;
         }
@@ -194,7 +200,8 @@ public class DrivingController : MonoBehaviour
     {
         Gizmos.color = Color.lightBlue;
 
-        Gizmos.DrawSphere(transform.position + transform.forward * body.transform.localScale.z / 2f, 0.5f);
+        Gizmos.DrawSphere(groundCheckFront.transform.position - new Vector3(0, groundDistance + wheelRadius, 0), 0.1f);
+        Gizmos.DrawSphere(groundCheckBack.transform.position - new Vector3(0, groundDistance + wheelRadius, 0), 0.1f);
     }
 
     public void ApplyGravity()
@@ -208,7 +215,7 @@ public class DrivingController : MonoBehaviour
         }
         else
         {
-            characterController.Move(new Vector3(0, (groundDistance + wheelRadius) - Vector3.Distance(groundCheckFront.position, hitPosition), 0));
+            //characterController.Move(new Vector3(0, (groundDistance + wheelRadius) - Vector3.Distance(groundCheckFront.position, hitPosition), 0));
 
             downwardVelocity = 0f;
         }
@@ -220,83 +227,113 @@ public class DrivingController : MonoBehaviour
 
         float rayLength = groundDistance + wheelRadius;
 
-        if(Physics.Raycast(currentPosition.position, -currentPosition.up, out hit, rayLength, groundMask))
+        if (Physics.Raycast(currentPosition.position, -currentPosition.up, out hit, rayLength, groundMask))
         {
             Debug.DrawRay(currentPosition.position, -currentPosition.up * rayLength, Color.green);
             groundCheck = true;
-            UnityEngine.Debug.Log("Grounded");
         }
         else
         {
             Debug.DrawRay(currentPosition.position, -currentPosition.up * rayLength, Color.red);
             groundCheck = false;
-            UnityEngine.Debug.Log("Not Grounded");
         }
+    }
+
+    struct rotationVariables
+    {
+        public rotationVariables(Transform groundCheck, RaycastHit hit, Vector3 axis, float rayLength)
+        {
+            this.groundCheck = groundCheck;
+            this.hit = hit;
+            this.axis = axis;
+            this.rayLength = rayLength;
+        }
+
+        public Transform groundCheck { get; private set; }
+        public RaycastHit hit { get; private set; }
+        public Vector3 axis { get; private set; }
+        public float rayLength { get; private set; }
     }
 
     public void RotateToFloor()
     {
         RaycastHit hit;
-        
+
         hitPosition = new();
 
-        Quaternion targetRotationFront = new();
-        Quaternion targetRotationBack = new();
-
         float rayLength = groundDistance + wheelRadius;
-        
+
+        rotationVariables[] rotationQueue = new rotationVariables[4];
+
+        //push the front up
         if (Physics.Raycast(groundCheckFront.position, -groundCheckFront.up, out hit, rayLength, groundMask))
         {
-            targetRotationFront = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
-
             hitPosition = hit.point;
-        }
-        if(Physics.Raycast(groundCheckBack.position, -groundCheckBack.up, out hit, rayLength, groundMask))
-        {
-            targetRotationBack = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
 
+            rotationQueue[0] = new(groundCheckBack, hit, -transform.right, rayLength);
+        }
+        else
+        {
+            transform.RotateAround(groundCheckBack.transform.position - new Vector3(0, rayLength, 0), transform.right, 0.3f);
+        }
+
+        //push the back up
+        if (Physics.Raycast(groundCheckBack.position, -groundCheckBack.up, out hit, rayLength, groundMask))
+        {
             hitPosition = hit.point;
-        }
 
-        if(is_grounded == false)
+            rotationQueue[1] = new(groundCheckFront, hit, transform.right, rayLength);
+        }
+        else
         {
-            transform.rotation = Quaternion.FromToRotation(transform.up, Vector3.up) * transform.rotation;
-            return;
+            transform.RotateAround(groundCheckFront.transform.position - new Vector3(0, rayLength, 0), -transform.right, 0.3f);
         }
 
-        rotateVehicle(targetRotationFront, targetRotationBack);
+        //push the left up
+        if (Physics.Raycast(groundCheckLeft.position, -groundCheckLeft.up, out hit, rayLength, groundMask))
+        {
+            hitPosition = hit.point;
+
+            rotationQueue[2] = new(groundCheckBack, hit, -transform.right, rayLength);
+        }
+        else
+        {
+            transform.RotateAround(groundCheckRight.transform.position - new Vector3(0, rayLength, 0), transform.forward, 0.3f);
+        }
+
+        //push the right up
+        if (Physics.Raycast(groundCheckRight.position, -groundCheckRight.up, out hit, rayLength, groundMask))
+        {
+            hitPosition = hit.point;
+
+            rotationQueue[1] = new(groundCheckLeft, hit, transform.right, rayLength);
+        }
+        else
+        {
+            transform.RotateAround(groundCheckLeft.transform.position - new Vector3(0, rayLength, 0), -transform.forward, 0.3f);
+        }
+
+        foreach (rotationVariables args in rotationQueue)
+        {
+            if (args.hit.transform == null) continue;
+            rotateVehicleAround(args);
+        }
+    }
+
+    private void rotateVehicleAround(rotationVariables vars)
+    {
+        rotateVehicleAround(vars.groundCheck, vars.hit, vars.axis, vars.rayLength);
     }
 
     //Rotate the vehicle to the correct rotation of the surface
-    private void rotateVehicle(Quaternion targetRotationFront, Quaternion targetRotationBack)
+    private void rotateVehicleAround(Transform groundCheck, RaycastHit hit, Vector3 axis, float rayLength)
     {
-        //if both rays are detecting a surface, then rotate to the surfaces average rotation
-        if (targetRotationFront != new Quaternion() && targetRotationBack != new Quaternion())
-        {
-            Quaternion temp = new(
-                avg(targetRotationFront.x, targetRotationBack.x),
-                avg(targetRotationFront.y, targetRotationBack.y),
-                avg(targetRotationFront.z, targetRotationBack.z),
-                avg(targetRotationFront.w, targetRotationBack.w));
-        
-            transform.rotation = Quaternion.Slerp(transform.rotation, temp, 1);
-        }
-        //if the back doesn't detect a surface, rotate to the rotation of the front
-        else if (targetRotationBack == new Quaternion())
-        {
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotationFront, 1);
-        }
-        //if the front doesn't detect a surface, rotate to the rotation of the back
-        else if (targetRotationFront == new Quaternion())
-        {
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotationBack, 1);
-        }
-    }
+        //amount of the ray that is under the surface
+        float hiddenRayHeight = rayLength - hit.distance;
+        float vehicleLength = transform.lossyScale.z;
+        float rotationAngle = Mathf.Atan(hiddenRayHeight / vehicleLength);
 
-    //Averages the two floats
-    float avg(float a, float b)
-    {
-        return (a + b) / 2f;
+        transform.RotateAround(groundCheck.transform.position - new Vector3(0, rayLength, 0), axis, rotationAngle);
     }
 
     void OnCollisionEnter(Collision collision) { }
