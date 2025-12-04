@@ -20,14 +20,11 @@ public class DrivingController : MonoBehaviour
     [SerializeField] Vector2 Movement;
     [SerializeField] bool is_moving => (Movement.y != 0);
 
-    [SerializeField] bool grounded;
-
     [Header("Gravity Variables")]
     [SerializeField] Transform groundCheckFront;
     [SerializeField] Transform groundCheckBack;
     [SerializeField] Transform groundCheckLeft;
     [SerializeField] Transform groundCheckRight;
-    [SerializeField] LayerMask groundMask;
     [SerializeField] float groundDistance = 0.4f;
     [SerializeField] float wheelRadius = 0.5f;
     [SerializeField] float gravity = -9.81f;
@@ -54,28 +51,10 @@ public class DrivingController : MonoBehaviour
         ApplyGravity();
 
         updateMove();
+
         updateRotate();
-
-        grounded = characterController.isGrounded;
     }
 
-    private void brake(float multiplier = 1f)
-    {
-        float speed_recuction = acceleration * Time.deltaTime * multiplier;
-
-        //if speed is around 0 then stop
-        if (Mathf.Abs(speed) <= speed_recuction)
-        {
-            speed = 0;
-
-            Movement.x = 0;
-        }
-        //otherwise decelerate
-        else
-        {
-            speed -= speed_recuction * sign;
-        }
-    }
 
     private void updateMove()
     {
@@ -91,8 +70,6 @@ public class DrivingController : MonoBehaviour
             {
                 speed += acceleration * Time.deltaTime * sign;
             }
-
-            Debug.Log(speed);
         }
         //if triggers not held, decelerate
         else
@@ -105,13 +82,11 @@ public class DrivingController : MonoBehaviour
 
     private void updateRotate()
     {
-
         //if the player isn't moving or trying to turn then return
-        if (speed == 0 || Movement.x == 0)
+        if (Movement.x == 0)
         {
-            body.transform.localRotation = new(0, 0, 0, 0);
-            body.transform.localPosition = new(0, 0, 0);
-
+            body.transform.localRotation = new(body.transform.localRotation.x, 0, body.transform.localRotation.y, 1);
+            body.transform.localPosition = new();
             return;
         }
 
@@ -145,6 +120,38 @@ public class DrivingController : MonoBehaviour
                 transform.up,
                 Movement.x * maxRotation);
         }
+
+        body.transform.localPosition = new();
+    }
+    public void ApplyGravity()
+    {
+        if (!characterController.isGrounded)
+        {
+            downwardVelocity += downwardVelocity < terminalVelocity ? gravity * Time.deltaTime : 0f;
+            characterController.Move(Vector3.up * downwardVelocity * vehicleMass * Time.deltaTime);
+        }
+        else
+        {
+            downwardVelocity = 0f;
+        }
+    }
+
+    private void brake(float multiplier = 1f)
+    {
+        float speed_recuction = acceleration * Time.deltaTime * multiplier;
+
+        //if speed is around 0 then stop
+        if (Mathf.Abs(speed) <= speed_recuction)
+        {
+            speed = 0;
+
+            Movement.x = 0;
+        }
+        //otherwise decelerate
+        else
+        {
+            speed -= speed_recuction * sign;
+        }
     }
 
     public void OnMove(InputValue value)
@@ -168,17 +175,5 @@ public class DrivingController : MonoBehaviour
         }
     }
 
-    public void ApplyGravity()
-    {
-        if (!characterController.isGrounded)
-        {
-            downwardVelocity += downwardVelocity < terminalVelocity ? gravity * Time.deltaTime : 0f;
-            characterController.Move(Vector3.up * downwardVelocity * vehicleMass * Time.deltaTime);
-        }
-        else
-        {
-            downwardVelocity = 0f;
-        }
-    }
 
 }
